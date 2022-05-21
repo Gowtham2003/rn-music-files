@@ -1,0 +1,6 @@
+rootProject.name = 'RnMusicFilesExample'
+apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
+include ':app'
+
+include ':rnmusicfiles'
+project(':rnmusicfiles').projectDir = new File(rootProject.projectDir, '../../android')
