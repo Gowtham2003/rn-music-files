@@ -38,7 +38,7 @@ public class FS {
 
     public static String saveToStorage(@NonNull String pathToImg, @NonNull byte[] imageBytes) throws IOException {
         File f = new File(pathToImg);
-        File filePath = new File(pathToImg+ "/" + SHAsum(imageBytes));
+        File filePath = new File(pathToImg+ "/" + SHAsum(imageBytes)+".jpg");
 
         if(f.exists() && !f.isDirectory()){
             Log.e(LOG, "coverPath is a file");
