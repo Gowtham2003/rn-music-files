@@ -1,6 +1,6 @@
 {
   "name": "rn-music-files",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "React Native Module for Fetching Music Files",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
