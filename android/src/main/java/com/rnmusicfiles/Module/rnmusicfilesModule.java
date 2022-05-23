@@ -66,7 +66,7 @@ public class rnmusicfilesModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getSongsByPath(ReadableMap args, Promise callback) {
+    public void getSongByPath(ReadableMap args, Promise callback) {
 
         Runnable runnable = new ToRunnable(
                 () -> {
@@ -95,14 +95,14 @@ public class rnmusicfilesModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getSongsByPaths(ReadableMap args, Promise callback) {
+    public void getSongsByPath(ReadableMap args, Promise callback) {
 
         Runnable runnable = new ToRunnable(
                 () -> {
                     try {
                         GetSongsByPathsOptions options = new GetSongsByPathsOptions(args);
                         WritableArray results = GetSongByPath.extractMetaDataFromDirectory(
-                                String.valueOf(options.path), options.minFileSize, options.maxFileSize, options.extensionFilter);
+                                String.valueOf(options.path), options.minFileSize, options.maxFileSize, options.extensionFilter,options.cover);
                         callback.resolve(results);
                     } catch (Exception e) {
                         callback.reject(e);

@@ -32,7 +32,7 @@ public class GetSongByPath {
         return results;
     }
 
-    public static WritableArray extractMetaDataFromDirectory ( String uri, int minFileSize, int maxFileSize, String extensionFilter){
+    public static WritableArray extractMetaDataFromDirectory ( String uri, int minFileSize, int maxFileSize, String extensionFilter,boolean cover){
         WritableArray results = new WritableNativeArray();
         File file = new File(uri);
         if(file.isDirectory()){
@@ -43,6 +43,17 @@ public class GetSongByPath {
                 HashMap<String, String> MetaMap = MetaDataExtractor.getMetaData(s);
                 for (Map.Entry<String, String> entry : MetaMap.entrySet()){
                     result.putString(entry.getKey(), entry.getValue());
+                }
+                if(cover) {
+                  try {
+                    byte[] albumImageData = MetaDataExtractor.getEmbededPicture(s);
+                    String coverPath = FS.saveToStorage(android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_PICTURES) + "/.covers", albumImageData);
+                    Log.e(LOG, "File saved");
+                    result.putString("cover", coverPath);
+                  } catch (Exception e) {
+                    Log.e(LOG, String.valueOf(e));
+                    result.putString("cover", "");
+                  }
                 }
                 results.pushMap(result);
             }
