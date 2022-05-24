@@ -20,21 +20,20 @@ import java.util.List;
 public class RnMusicFilesPackage implements ReactPackage {
   private SerialExecutor executor = new SerialExecutor();
 
-    @NonNull
-    @Override
-    public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
+  @NonNull
+  @Override
+  public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
     return Arrays.<NativeModule>asList(new rnmusicfilesModule(reactContext, executor));
-    }
+  }
 
-    public List<Class<? extends JavaScriptModule>> createJSModules() {
-        return null;
-    }
+  public List<Class<? extends JavaScriptModule>> createJSModules() {
+    return null;
+  }
 
-    @NonNull
-    @Override
-    public List<ViewManager> createViewManagers(@NonNull ReactApplicationContext reactContext) {
+  @NonNull
+  @Override
+  public List<ViewManager> createViewManagers(@NonNull ReactApplicationContext reactContext) {
     return Arrays.asList(
-                new CoverImage(executor)
-        );
-    }
+        new CoverImage(executor));
+  }
 }

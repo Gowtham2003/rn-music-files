@@ -2,10 +2,8 @@ package com.rnmusicfiles.Module;
 
 import android.content.ContentResolver;
 
-import com.rnmusicfiles.Methods.GetAlbums;
-import com.rnmusicfiles.Methods.GetArtists;
-import com.rnmusicfiles.Methods.GetSongByPath;
-import com.rnmusicfiles.Methods.GetSongs;
+import com.rnmusicfiles.FileService;
+
 import com.rnmusicfiles.Models.Options.GetAlbumsOptions;
 import com.rnmusicfiles.Models.Options.GetAllOptions;
 import com.rnmusicfiles.Models.Options.GetArtistsOptions;
@@ -25,8 +23,9 @@ import com.facebook.react.bridge.WritableMap;
 
 import java.util.Objects;
 
-import static com.rnmusicfiles.Methods.GetAll.getAllSongs;
-import static com.rnmusicfiles.Methods.Search.searchDB;
+import static com.rnmusicfiles.FileService.getAllSongs;
+
+import static com.rnmusicfiles.FileService.searchDB;
 
 public class rnmusicfilesModule extends ReactContextBaseJavaModule {
 
@@ -71,10 +70,11 @@ public class rnmusicfilesModule extends ReactContextBaseJavaModule {
                 () -> {
                     try {
                         GetSongsByPathOptions options = new GetSongsByPathOptions(args);
-                        WritableMap results = GetSongByPath.extractMetaDataFromFile(String.valueOf(options.path));
+                        WritableMap results = FileService.extractMetaDataFromFile(String.valueOf(options.path));
                         if (options.cover) {
                             try {
-                                String PathToCover = GetSongByPath.getCoverFromFile(String.valueOf(options.coverFolder),
+                                String PathToCover = FileService.getCoverFromFile(
+                                        String.valueOf(options.coverFolder),
                                         String.valueOf(options.path));
                                 results.putString("cover", PathToCover);
                             } catch (Exception e) {
@@ -100,7 +100,7 @@ public class rnmusicfilesModule extends ReactContextBaseJavaModule {
                 () -> {
                     try {
                         GetSongsByPathsOptions options = new GetSongsByPathsOptions(args);
-                        WritableArray results = GetSongByPath.extractMetaDataFromDirectory(reactContext,
+                        WritableArray results = FileService.extractMetaDataFromDirectory(reactContext,
                                 String.valueOf(options.path), options.minFileSize, options.maxFileSize,
                                 options.extensionFilter, options.cover);
                         callback.resolve(results);
@@ -121,7 +121,7 @@ public class rnmusicfilesModule extends ReactContextBaseJavaModule {
                         GetAlbumsOptions options = new GetAlbumsOptions(args);
                         ContentResolver contentResolver = Objects.requireNonNull(getCurrentActivity())
                                 .getContentResolver();
-                        WritableMap results = GetAlbums.getAlbums(options, contentResolver);
+                        WritableMap results = FileService.getAlbums(options, contentResolver);
                         callback.resolve(results);
                     } catch (Exception e) {
                         callback.reject(e);
@@ -140,7 +140,7 @@ public class rnmusicfilesModule extends ReactContextBaseJavaModule {
                         GetArtistsOptions options = new GetArtistsOptions(args);
                         ContentResolver contentResolver = Objects.requireNonNull(getCurrentActivity())
                                 .getContentResolver();
-                        WritableMap results = GetArtists.getArtists(options, contentResolver);
+                        WritableMap results = FileService.getArtists(options, contentResolver);
                         callback.resolve(results);
                     } catch (Exception e) {
                         callback.reject(e);
@@ -159,7 +159,7 @@ public class rnmusicfilesModule extends ReactContextBaseJavaModule {
                         GetSongsOptions options = new GetSongsOptions(args);
                         ContentResolver contentResolver = Objects.requireNonNull(getCurrentActivity())
                                 .getContentResolver();
-                        WritableMap results = GetSongs.getSongs(options, contentResolver);
+                        WritableMap results = FileService.getSongs(options, contentResolver);
                         callback.resolve(results);
                     } catch (Exception e) {
                         callback.reject(e);

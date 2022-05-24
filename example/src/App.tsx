@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   Image,
@@ -18,13 +18,21 @@ export default function App() {
     getSongsSearchParamAlbum: null,
     search: [],
   });
+  useEffect(() => {
+    requestPermission();
+  }, []);
+
   const requestPermission = async () => {
     try {
       const granted = await PermissionsAndroid.requestMultiple([
         PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
       ]);
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+
+      if (
+        granted['android.permission.READ_EXTERNAL_STORAGE'] === 'granted' &&
+        granted['android.permission.WRITE_EXTERNAL_STORAGE'] === 'granted'
+      ) {
         alert('You can use the package');
       } else {
         requestPermission();
@@ -175,13 +183,6 @@ export default function App() {
         <Text style={styles.instructions}>
           results : {JSON.stringify(state.search)}
         </Text>
-        {state?.search?.map((item) => (
-          <Image
-            style={{ backgroundColor: 'red', width: 50, height: 50 }}
-            key={item.id}
-            source={{ uri: 'file://' + item?.cover }}
-          />
-        ))}
       </ScrollView>
     </View>
   );
