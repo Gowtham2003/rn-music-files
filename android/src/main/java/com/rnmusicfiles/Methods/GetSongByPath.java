@@ -18,42 +18,47 @@ import java.util.List;
 import java.util.Map;
 
 import static com.rnmusicfiles.Utils.GeneralUtils.LOG;
+import com.facebook.react.bridge.ReactApplicationContext;
 
 public class GetSongByPath {
 
-    public static WritableMap extractMetaDataFromFile (String path){
+    public static WritableMap extractMetaDataFromFile(String path) {
 
         WritableMap results = new WritableNativeMap();
         HashMap<String, String> MetaMap = MetaDataExtractor.getMetaData(path);
-        for (Map.Entry<String, String> entry : MetaMap.entrySet()){
+        for (Map.Entry<String, String> entry : MetaMap.entrySet()) {
             results.putString(entry.getKey(), entry.getValue());
         }
 
         return results;
     }
 
-    public static WritableArray extractMetaDataFromDirectory ( String uri, int minFileSize, int maxFileSize, String extensionFilter,boolean cover){
+    public static WritableArray extractMetaDataFromDirectory(ReactApplicationContext reactContext, String uri,
+            int minFileSize, int maxFileSize, String extensionFilter, boolean cover) {
         WritableArray results = new WritableNativeArray();
         File file = new File(uri);
-        if(file.isDirectory()){
+        if (file.isDirectory()) {
             List<String> filesPaths = new ArrayList<>();
-            FS.listFilesForFolder( new File(uri), minFileSize, maxFileSize, extensionFilter, filesPaths);
+            FS.listFilesForFolder(new File(uri), minFileSize, maxFileSize, extensionFilter, filesPaths);
             for (String s : filesPaths) {
                 WritableMap result = new WritableNativeMap();
                 HashMap<String, String> MetaMap = MetaDataExtractor.getMetaData(s);
-                for (Map.Entry<String, String> entry : MetaMap.entrySet()){
+                for (Map.Entry<String, String> entry : MetaMap.entrySet()) {
                     result.putString(entry.getKey(), entry.getValue());
                 }
-                if(cover) {
-                  try {
-                    byte[] albumImageData = MetaDataExtractor.getEmbededPicture(s);
-                    String coverPath = FS.saveToStorage(android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_PICTURES) + "/.covers", albumImageData);
-                    Log.e(LOG, "File saved");
-                    result.putString("cover", coverPath);
-                  } catch (Exception e) {
-                    Log.e(LOG, String.valueOf(e));
-                    result.putString("cover", "");
-                  }
+                if (cover) {
+                    try {
+                        byte[] albumImageData = MetaDataExtractor.getEmbededPicture(s);
+                        String coverPath = FS
+                                .saveToStorage(
+                                        reactContext.getCacheDir().getAbsolutePath(),
+                                        albumImageData);
+                        Log.e(LOG, "File saved");
+                        result.putString("cover", coverPath);
+                    } catch (Exception e) {
+                        Log.e(LOG, String.valueOf(e));
+                        result.putString("cover", "");
+                    }
                 }
                 results.pushMap(result);
             }
@@ -68,7 +73,5 @@ public class GetSongByPath {
         Log.e(LOG, "File saved");
         return coverPath;
     }
-
-
 
 }

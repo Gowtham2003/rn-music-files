@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
   Button,
+  Image,
   PermissionsAndroid,
   ScrollView,
   StyleSheet,
@@ -174,6 +175,13 @@ export default function App() {
         <Text style={styles.instructions}>
           results : {JSON.stringify(state.search)}
         </Text>
+        {state?.search?.map((item) => (
+          <Image
+            style={{ backgroundColor: 'red', width: 50, height: 50 }}
+            key={item.id}
+            source={{ uri: 'file://' + item?.cover }}
+          />
+        ))}
       </ScrollView>
     </View>
   );

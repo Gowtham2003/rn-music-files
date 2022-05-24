@@ -18,16 +18,17 @@ import java.util.Objects;
 
 import static com.rnmusicfiles.Utils.GeneralUtils.LOG;
 import static com.rnmusicfiles.Utils.OrderByGenerator.generateSortOrder;
+import com.facebook.react.bridge.ReactApplicationContext;
 
 public class GetAll {
 
-    public static WritableMap getAllSongs(GetAllOptions options, ContentResolver contentResolver) throws Exception {
+    public static WritableMap getAllSongs(GetAllOptions options, ContentResolver contentResolver,
+            ReactApplicationContext reactContext) throws Exception {
 
         WritableArray jsonArray = new WritableNativeArray();
-        String[] projection = new String[]{MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST,
+        String[] projection = new String[] { MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST,
                 MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.DATA,
-                MediaStore.Audio.Media._ID};
-
+                MediaStore.Audio.Media._ID };
 
         String Selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0";
 
@@ -45,7 +46,6 @@ public class GetAll {
                 projection, Selection, null, orderBy);
 
         int cursorCount = Objects.requireNonNull(cursor).getCount();
-
 
         if (cursorCount > (options.batchSize * options.batchNumber)) {
             cursor.moveToPosition(options.batchSize * options.batchNumber);
@@ -66,7 +66,8 @@ public class GetAll {
 
                     try {
                         byte[] albumImageData = MetaDataExtractor.getEmbededPicture(path);
-                        String coverPath = FS.saveToStorage(CoverPath, albumImageData);
+                        String coverPath = FS.saveToStorage(reactContext.getCacheDir().getAbsolutePath(),
+                                albumImageData);
                         Log.e(LOG, "File saved");
                         item.putString("cover", coverPath);
                     } catch (Exception e) {
@@ -75,7 +76,8 @@ public class GetAll {
                     }
                 }
                 jsonArray.pushMap(item);
-            } while ((options.batchSize == 0 || cursor.getPosition() + 1 < options.batchSize * (options.batchNumber + 1)) & cursor.moveToNext());
+            } while ((options.batchSize == 0
+                    || cursor.getPosition() + 1 < options.batchSize * (options.batchNumber + 1)) & cursor.moveToNext());
         } else {
 
             cursor.close();

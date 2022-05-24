@@ -32,18 +32,17 @@ public class rnmusicfilesModule extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private SerialExecutor executor;
+
     public rnmusicfilesModule(ReactApplicationContext reactContext, SerialExecutor exec) {
         super(reactContext);
         this.reactContext = reactContext;
         this.executor = exec;
     }
 
-
     @Override
     public String getName() {
         return "MusicFiles";
     }
-
 
     @ReactMethod
     public void getAll(ReadableMap args, Promise callback) {
@@ -52,14 +51,14 @@ public class rnmusicfilesModule extends ReactContextBaseJavaModule {
                 () -> {
                     try {
                         GetAllOptions options = new GetAllOptions(args);
-                        ContentResolver contentResolver = Objects.requireNonNull(getCurrentActivity()).getContentResolver();
-                        WritableMap results = getAllSongs(options, contentResolver);
+                        ContentResolver contentResolver = Objects.requireNonNull(getCurrentActivity())
+                                .getContentResolver();
+                        WritableMap results = getAllSongs(options, contentResolver, reactContext);
                         callback.resolve(results);
                     } catch (Exception e) {
                         callback.reject(e);
                     }
-                }, executor
-        );
+                }, executor);
 
         runnable.run();
 
@@ -75,7 +74,8 @@ public class rnmusicfilesModule extends ReactContextBaseJavaModule {
                         WritableMap results = GetSongByPath.extractMetaDataFromFile(String.valueOf(options.path));
                         if (options.cover) {
                             try {
-                                String PathToCover = GetSongByPath.getCoverFromFile(String.valueOf(options.coverFolder), String.valueOf(options.path));
+                                String PathToCover = GetSongByPath.getCoverFromFile(String.valueOf(options.coverFolder),
+                                        String.valueOf(options.path));
                                 results.putString("cover", PathToCover);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -87,8 +87,7 @@ public class rnmusicfilesModule extends ReactContextBaseJavaModule {
                     } catch (Exception e) {
                         callback.reject(e);
                     }
-                }, executor
-        );
+                }, executor);
 
         runnable.run();
 
@@ -101,14 +100,14 @@ public class rnmusicfilesModule extends ReactContextBaseJavaModule {
                 () -> {
                     try {
                         GetSongsByPathsOptions options = new GetSongsByPathsOptions(args);
-                        WritableArray results = GetSongByPath.extractMetaDataFromDirectory(
-                                String.valueOf(options.path), options.minFileSize, options.maxFileSize, options.extensionFilter,options.cover);
+                        WritableArray results = GetSongByPath.extractMetaDataFromDirectory(reactContext,
+                                String.valueOf(options.path), options.minFileSize, options.maxFileSize,
+                                options.extensionFilter, options.cover);
                         callback.resolve(results);
                     } catch (Exception e) {
                         callback.reject(e);
                     }
-                }, executor
-        );
+                }, executor);
 
         runnable.run();
 
@@ -120,14 +119,14 @@ public class rnmusicfilesModule extends ReactContextBaseJavaModule {
                 () -> {
                     try {
                         GetAlbumsOptions options = new GetAlbumsOptions(args);
-                        ContentResolver contentResolver = Objects.requireNonNull(getCurrentActivity()).getContentResolver();
+                        ContentResolver contentResolver = Objects.requireNonNull(getCurrentActivity())
+                                .getContentResolver();
                         WritableMap results = GetAlbums.getAlbums(options, contentResolver);
                         callback.resolve(results);
                     } catch (Exception e) {
                         callback.reject(e);
                     }
-                }, executor
-        );
+                }, executor);
 
         runnable.run();
     }
@@ -139,14 +138,14 @@ public class rnmusicfilesModule extends ReactContextBaseJavaModule {
                 () -> {
                     try {
                         GetArtistsOptions options = new GetArtistsOptions(args);
-                        ContentResolver contentResolver = Objects.requireNonNull(getCurrentActivity()).getContentResolver();
+                        ContentResolver contentResolver = Objects.requireNonNull(getCurrentActivity())
+                                .getContentResolver();
                         WritableMap results = GetArtists.getArtists(options, contentResolver);
                         callback.resolve(results);
                     } catch (Exception e) {
                         callback.reject(e);
                     }
-                }, executor
-        );
+                }, executor);
 
         runnable.run();
 
@@ -158,14 +157,14 @@ public class rnmusicfilesModule extends ReactContextBaseJavaModule {
                 () -> {
                     try {
                         GetSongsOptions options = new GetSongsOptions(args);
-                        ContentResolver contentResolver = Objects.requireNonNull(getCurrentActivity()).getContentResolver();
+                        ContentResolver contentResolver = Objects.requireNonNull(getCurrentActivity())
+                                .getContentResolver();
                         WritableMap results = GetSongs.getSongs(options, contentResolver);
                         callback.resolve(results);
                     } catch (Exception e) {
                         callback.reject(e);
                     }
-                }, executor
-        );
+                }, executor);
 
         runnable.run();
 
@@ -177,14 +176,14 @@ public class rnmusicfilesModule extends ReactContextBaseJavaModule {
                 () -> {
                     try {
                         SearchOptions options = new SearchOptions(args);
-                        ContentResolver contentResolver = Objects.requireNonNull(getCurrentActivity()).getContentResolver();
+                        ContentResolver contentResolver = Objects.requireNonNull(getCurrentActivity())
+                                .getContentResolver();
                         WritableMap results = searchDB(options, contentResolver);
                         callback.resolve(results);
                     } catch (Exception e) {
                         callback.reject(e);
                     }
-                }, executor
-        );
+                }, executor);
 
         runnable.run();
 
